@@ -90,6 +90,14 @@ TaCompositionElement >> hash [
 	^ self innerClass hash
 ]
 
+{ #category : #testing }
+TaCompositionElement >> includesTrait: aTrait [
+
+	innerClass = aTrait ifTrue: [ ^ true ].
+
+	^ innerClass traitComposition includesTrait: aTrait
+]
+
 { #category : #'transforming selectors' }
 TaCompositionElement >> initializeSelectorForMe [
 	^ ('initializeTalent_' , self name) asSymbol
@@ -123,11 +131,12 @@ TaCompositionElement >> name [
 
 { #category : #testing }
 TaCompositionElement >> needsRecompilation: aSelector [
-
 	"We need to recompile if there is a supersend"
 
-	^ (innerClass >> aSelector) sendsToSuper or: [
-		  super needsRecompilation: aSelector ]
+	^ innerClass
+		  compiledMethodAt: aSelector
+		  ifPresent: [ :aMethod | aMethod sendsToSuper or: [ super needsRecompilation: aSelector ] ]
+		  ifAbsent: [ true ]
 ]
 
 { #category : #users }

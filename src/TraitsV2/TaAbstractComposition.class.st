@@ -273,10 +273,11 @@ TaAbstractComposition >> hash [
 	^ self subclassResponsibility
 ]
 
-{ #category : #querying }
+{ #category : #testing }
 TaAbstractComposition >> includesTrait: aTrait [
 	"Checks if the trait is used in the trait composition"
-	^ self allTraits includes: aTrait
+
+	^ self subclassResponsibility
 ]
 
 { #category : #operations }
@@ -320,14 +321,10 @@ TaAbstractComposition >> installSelector: aSelector into: aClass replacing: repl
 	It is probable the aliased method does not exists any more in the trait composition. This situation is checked when creating the trait composition."
 
 
-	[
-		^ (self needsRecompilation: aSelector)
+	^ (self needsRecompilation: aSelector)
 			ifTrue:[ self compile: aSelector into: aClass	]
 			ifFalse:[ self copyMethod: aSelector into: aClass replacing: replacing ].
-	 ] on: NotFound
-		do: [ ^ true ].
 
-	^ true
 ]
 
 { #category : #testing }
